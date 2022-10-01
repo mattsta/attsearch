@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "attsearch"
+version = "0.1.0"
+description = "Use ATT Internet Service Area API to find service levels"
+authors = ["Matt Stancliff <matt@genges.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+httpx = "^0.23.0"
+loguru = "^0.6.0"
+fire = "^0.4.0"
+
+[tool.poetry.scripts]
+attsearch = "attsearch.search:cmd"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
