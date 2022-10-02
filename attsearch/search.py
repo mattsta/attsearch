@@ -57,18 +57,32 @@ def search(addr1: str, addr2: str, zipcode: str) -> None:
     got = attsearch(addr1, addr2, zipcode)
 
     if content := got.get("content"):
+        sa = content.get("serviceAvailability")
         try:
             logger.info(
                 "Highest service level reported: {}",
-                content["serviceAvailability"]["availableServices"][
-                    "maxInternetDisplayText"
-                ],
+                sa["availableServices"]["maxInternetDisplayText"],
             )
         except:
             logger.error(
                 "Failed to find service key in result? Make sure to include 'APT XXX' if multiple units are at the same address."
             )
             logger.warning("Failed result returned:\n{}", pp.pformat(got))
+            if mdus := sa.get("mduAddress"):
+                logger.warning(
+                    "Error result included list of {} possible valid addresses you can retry:\n{}",
+                    len(mdus),
+                    pp.pformat(
+                        [
+                            {
+                                k: v
+                                for k, v in mdu.items()
+                                if k in {"addressLine1", "addressLine2", "zip"}
+                            }
+                            for mdu in mdus
+                        ]
+                    ),
+                )
     else:
         logger.error("Request failed!\n{}", pp.pformat(got))
 
